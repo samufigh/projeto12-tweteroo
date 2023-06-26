@@ -1,17 +1,67 @@
-import express from "express";
+import express from 'express';
+import cors from 'cors';
 
-const app = express();
+const server = express();
+server.use(cors());
+server.listen(5000, () => console.log('Running on port 5000'));
+server.use(express.json());
 
-app.get("/", (req, res) => {
-    const tweets = [
-        {
-            username: "bobesponja",
-            avatar: "https://cdn.shopify.com/s/files/1/0150/0643/3380/files/Screen_Shot_2019-07-01_at_11.35.42_AM_370x230@2x.png",
-            tweet: "Eu amo hambúrguer de siri!"
+
+var users = [];
+var tweets = [];
+
+server.post("/tweets", (req, res) => {
+
+    const request = req.body;
+    if (users.length != 0){
+        for (let i = 0; i < users.length; i++){
+            if (users[i].username == request.username){
+
+                const objeto = { 
+                    username: request.username, 
+                    avatar: users[i].avatar, 
+                    tweet: request.tweet
+                };
+                
+                tweets.push(objeto);
+                res.send('OK');
+                res.status(200);
+                break;
+            }
+            else if ((i == users.length - 1 || i == users.length) && users[i].username != request.username){
+                res.status(202);
+                res.send('UNAUTHORIZED');
+            }
         }
-    ]
-    res.send(tweets);
+    }
+    else{
+        res.status(202);
+        res.send('UNAUTHORIZED');
+    }
 })
 
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Running server on port ${PORT}`));
+server.post("/sign-up", (req, res) => {
+
+
+    users.push(req.body);
+    res.status(200);
+    res.send('OK');
+})
+
+server.get('/tweets', (req, res) => {
+
+    if (tweets.length <= 10){
+        res.send(tweets);
+        res.status(200);
+    }
+
+    else{
+        let objeto = [];
+        const total = tweets.length - 1;
+        for(let a = 0; a < 10; a++){
+            objeto.push( tweets[total - a] );
+        }
+        res.status(200);
+        res.send(objeto);
+    }
+})
