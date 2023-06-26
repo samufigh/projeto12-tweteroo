@@ -13,28 +13,28 @@ var tweets = [];
 server.post("/tweets", (req, res) => {
 
     const request = req.body;
-    if (users.length != 0){
-        for (let i = 0; i < users.length; i++){
-            if (users[i].username == request.username){
+    if (users.length != 0) {
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].username == request.username) {
 
-                const objeto = { 
-                    username: request.username, 
-                    avatar: users[i].avatar, 
+                const objeto = {
+                    username: request.username,
+                    avatar: users[i].avatar,
                     tweet: request.tweet
                 };
-                
+
                 tweets.push(objeto);
                 res.send('OK');
                 res.status(200);
                 break;
             }
-            else if ((i == users.length - 1 || i == users.length) && users[i].username != request.username){
+            else if ((i == users.length - 1 || i == users.length) && users[i].username != request.username) {
                 res.status(202);
                 res.send('UNAUTHORIZED');
             }
         }
     }
-    else{
+    else {
         res.status(202);
         res.send('UNAUTHORIZED');
     }
@@ -50,16 +50,16 @@ server.post("/sign-up", (req, res) => {
 
 server.get('/tweets', (req, res) => {
 
-    if (tweets.length <= 10){
+    if (tweets.length <= 10) {
         res.send(tweets);
         res.status(200);
     }
 
-    else{
+    else {
         let objeto = [];
         const total = tweets.length - 1;
-        for(let a = 0; a < 10; a++){
-            objeto.push( tweets[total - a] );
+        for (let a = 0; a < 10; a++) {
+            objeto.push(tweets[total - a]);
         }
         res.status(200);
         res.send(objeto);
